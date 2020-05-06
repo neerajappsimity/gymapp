@@ -36,6 +36,18 @@ app.use('/users', usersRouter);
 
 /**** Mongoose DB conntect */
 const mongoose = require('mongoose');
+const database = require('./config/database');
+mongoose.set('debug', true)
+mongoose.Promise = global.Promise
+mongoose.connect(database.database, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true
+})
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
+
 
 
 
