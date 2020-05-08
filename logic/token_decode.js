@@ -6,7 +6,7 @@ token_decode = (token)=> {
         const decode = jwt.verify(token, config.secretkey)
         if(decode)
         {
-            return decode
+            return decode;
         }
         return false
     }

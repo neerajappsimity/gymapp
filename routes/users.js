@@ -12,7 +12,8 @@ const verifyToken = require('../controller/authController')
 
 router.post('/register', userController.register)
 router.post('/confirmation', userController.confirmation)
-router.post('/login', userController.login);
+router.post('/login', userController.login)
+router.post('/profile', verifyToken, userController.profile)
 
 
 module.exports = router;
