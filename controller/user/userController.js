@@ -103,7 +103,7 @@ const profile = async(req, res, next) => {
         const { email, _id } = token_decode(token)
         const fetch_user = await create_user.findOne({ email:email, _id:_id })
         if(!fetch_user) return res.status(404).json({status:false, msg:'User not exists!'})
-        return res.status(200).json({status: true, data:fetch_user});
+        return res.status(200).json({status: true, msg:'successfully getting.', data:fetch_user});
     } catch (e) {
         console.log(e);
         return res.status(500).json({status:false, msg:'something went wrong'})
