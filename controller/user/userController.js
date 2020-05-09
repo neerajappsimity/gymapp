@@ -15,10 +15,10 @@ const token_decode = require('../../logic/token_decode')
 const register = async(req, res, next) => {
     try{
         const { email, password, phone } = req.body;
-        if(!email) return res.status(404).json({status:false, msg:'Please provide the email.'})
-        if(!validator.isEmail(email)) return res.status(404).json({status:false, msg:'Please provide the valid email.'})
-        if(!password) return res.status(404).json({status:false, msg:'Please provide the password.'})
-        if(!phone) return res.status(404).json({status:false, msg:'Please provid the phone number.'})
+        if(!email) return res.json({status:false, msg:'Please provide the email.'})
+        if(!validator.isEmail(email)) return res.json({status:false, msg:'Please provide the valid email.'})
+        if(!password) return res.json({status:false, msg:'Please provide the password.'})
+        if(!phone) return res.json({status:false, msg:'Please provid the phone number.'})
         const fetch_user = await create_user.findOne({email:email})
         if(fetch_user) return res.json({status:false, msg:'email already exist.'})
         const encyPassword = cryptr.encrypt(password);
@@ -47,13 +47,13 @@ const register = async(req, res, next) => {
 const confirmation = async(req, res, next) => {
     try {
         const { email, otp } = req.body
-        if(!email) return res.status(404).json({status:false, msg:'Please provide email'})
-        if(!validator.isEmail(email)) return res.status(404).json({status:false, msg:'Please provide a valid email'})
-        if(!otp) return res.status(404).json({status:false, msg:'Please provide OTP'})
+        if(!email) return res.json({status:false, msg:'Please provide email'})
+        if(!validator.isEmail(email)) return res.json({status:false, msg:'Please provide a valid email'})
+        if(!otp) return res.json({status:false, msg:'Please provide OTP'})
         const encryptotp = cryptr.encrypt(otp)
         const fetch_user = await create_user.findOne({email:email})
-        if(!fetch_user) return res.status(404).json({status:false,msg:'Email does not match. '})
-        if(cryptr.decrypt(fetch_user.otpForgetPassword) !== otp) return res.status(404).json({status:false, msg:'Invaild OTP'})
+        if(!fetch_user) return res.json({status:false,msg:'Email does not match. '})
+        if(cryptr.decrypt(fetch_user.otpForgetPassword) !== otp) return res.json({status:false, msg:'Invaild OTP'})
         const token = jwt.sign(fetch_user.toJSON(), config.secretkey)
         fetch_user.otpForgetPassword = null;
         fetch_user.verified = true;
@@ -72,12 +72,12 @@ const confirmation = async(req, res, next) => {
 const login = async(req, res, next) => {
     try {
         const { email, password } = req.body
-        if(!email) return res.status(404).json({status:false, msg:'Please provid email.'})
-        if(!password) return res.status(404).json({status:false, msg:'Please provid password.'})
-        if(!validator.isEmail(email)) return res.status(404).json({status:false, msg:'Please provid a valid email.'})
+        if(!email) return res.json({status:false, msg:'Please provid email.'})
+        if(!password) return res.json({status:false, msg:'Please provid password.'})
+        if(!validator.isEmail(email)) return res.json({status:false, msg:'Please provid a valid email.'})
         const fetch_user = await create_user.findOne({email:email})
-        if(!fetch_user) return res.status(404).json({status:false, msg:'Email does not match.'})
-        if(cryptr.decrypt(fetch_user.password) !== password) return res.status(404).json({status:false, msg:'Email and Password does not match.'})
+        if(!fetch_user) return res.json({status:false, msg:'Email does not match.'})
+        if(cryptr.decrypt(fetch_user.password) !== password) return res.json({status:false, msg:'Email and Password does not match.'})
         if(fetch_user.verified === false){
             const randomeNumber = generateRandomNumber();
             sendEmail(randomeNumber, fetch_user.email);
@@ -102,7 +102,7 @@ const profile = async(req, res, next) => {
         const { token } = req.headers
         const { email, _id } = token_decode(token)
         const fetch_user = await create_user.findOne({ email:email, _id:_id })
-        if(!fetch_user) return res.status(404).json({status:false, msg:'User not exists!'})
+        if(!fetch_user) return res.json({status:false, msg:'User not exists!'})
         return res.status(200).json({status: true, msg:'successfully getting.', data:fetch_user});
     } catch (e) {
         console.log(e);
