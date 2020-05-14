@@ -72,9 +72,9 @@ const confirmation = async(req, res, next) => {
 const login = async(req, res, next) => {
     try {
         const { email, password } = req.body
-        if(!email) return res.json({status:false, msg:'Please provid email.'})
-        if(!password) return res.json({status:false, msg:'Please provid password.'})
-        if(!validator.isEmail(email)) return res.json({status:false, msg:'Please provid a valid email.'})
+        if(!email) return res.json({status:false, msg:'Please provide email.'})
+        if(!password) return res.json({status:false, msg:'Please provide password.'})
+        if(!validator.isEmail(email)) return res.json({status:false, msg:'Please provide a valid email.'})
         const fetch_user = await create_user.findOne({email:email})
         if(!fetch_user) return res.json({status:false, msg:'Email does not match.'})
         if(cryptr.decrypt(fetch_user.password) !== password) return res.json({status:false, msg:'Email and Password does not match.'})
