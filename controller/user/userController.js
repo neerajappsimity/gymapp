@@ -18,7 +18,7 @@ const register = async(req, res, next) => {
         if(!email) return res.json({status:false, msg:'Please provide the email.'})
         if(!validator.isEmail(email)) return res.json({status:false, msg:'Please provide the valid email.'})
         if(!password) return res.json({status:false, msg:'Please provide the password.'})
-        if(!phone) return res.json({status:false, msg:'Please provid the phone number.'})
+        if(!phone) return res.json({status:false, msg:'Please provide the phone number.'})
         const fetch_user = await create_user.findOne({email:email})
         if(fetch_user) return res.json({status:false, msg:'email already exist.'})
         const encyPassword = cryptr.encrypt(password);
