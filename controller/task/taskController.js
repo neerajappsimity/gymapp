@@ -8,7 +8,7 @@ const addtask = async(req, res, next) => {
     try {
         const {token} = req.headers;
         const {email, _id} = token_decode(token)
-        const { title, start_date, start_time, type, timer } = req.body
+        const { title, start_date, start_time, type, timer, sender_id } = req.body
         const fetch_user = await create_user.findOne({_id:_id, verified: true})
         if(!fetch_user) return res.status(404).json({status:false, msg:'user not exists!'})
         if(!title) return res.status(404).json({status:false, msg:'Please provide title'})
@@ -16,12 +16,17 @@ const addtask = async(req, res, next) => {
         if(!start_time) return res.status(404).json({status:false, msg:'Please provide start time'})
         if(!type) return res.status(404).json({status:false, msg:'Please provide type'})
         if(!timer) return res.status(404).json({status:false, msg:'Please provide timer'})
+        if(!sender_id) return res.status(404).json({status:false, msg:'Please provide sender id'})
+        const fetch_sender = await create_user.findById({_id: sender_id, verified: true})
+        // return fetch_sender
+        if(!fetch_sender) return res.status(404).json({status:false, msg: 'Please provide correct sender id'})
         const addTask = new create_task({
             title: title,
             start_date: start_date,
             start_time:start_time,
             type: type,
             timer: timer,
+            senderId: sender_id,
             createdById: _id,
             createdAt: timeStamp,
             updatedAt: timeStamp
@@ -58,7 +63,33 @@ const alltask = async(req, res, next) => {
         const {email, _id} = token_decode(token);
         const fetch_user = await create_user.findOne({_id:_id, verified: true})
         if(!fetch_user) return res.status(404).json({status:false, msg:'user not exists!'})
-        const fetch_task = await create_task.find({createdById: _id})
+        // const fetch_task = await create_task.find({createdById: _id})
+        const fetch_task = await create_task.aggregate([
+            {
+                $match: { createdById: _id }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    // localField: "createdById",
+                    // foreignField: "_id",
+                    let: { 
+                        sender_id: "$senderId"
+                     }, 
+                    as: "sender",
+                    pipeline: [
+                        { $addFields: { _id: { $toString: "$sender_id" } } },
+                        {
+                            $match: {
+                                $expr: {
+                                $and: [{ $eq: ["$_id", "$$sender_id"] }]
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+        ])
         if(!fetch_task) return res.status(404).json({status:false, msg:'tasks not found'})
         return res.status(200).json({status:true, msg:'successfully getting tasks', data: fetch_task})
 

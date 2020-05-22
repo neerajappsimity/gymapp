@@ -6,4 +6,5 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'GYM TensorFLow, Keras, Node js' });
 });
 
+
 module.exports = router;

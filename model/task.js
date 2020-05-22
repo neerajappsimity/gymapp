@@ -32,6 +32,10 @@ const task = new Schema({
         trim: true,
         default: 'send'
     },
+    senderId: {
+        type: String,
+        trim: true
+    },
     createdAt: {
         type:Number
     },
