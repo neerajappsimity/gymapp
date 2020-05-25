@@ -8,12 +8,13 @@ const addtask = async(req, res, next) => {
     try {
         const {token} = req.headers;
         const {email, _id} = token_decode(token)
-        const { title, start_date, start_time, type, timer, sender_id } = req.body
+        const { title, start_date, start_time, end_time, type, timer, sender_id } = req.body
         const fetch_user = await create_user.findOne({_id:_id, verified: true})
         if(!fetch_user) return res.status(404).json({status:false, msg:'user not exists!'})
         if(!title) return res.status(404).json({status:false, msg:'Please provide title'})
         if(!start_date) return res.status(404).json({status:false, msg:'Please provide start date'})
         if(!start_time) return res.status(404).json({status:false, msg:'Please provide start time'})
+        if(!end_time) return res.status(404).json({status:false, msg:'Please provide end time'})
         if(!type) return res.status(404).json({status:false, msg:'Please provide type'})
         if(!timer) return res.status(404).json({status:false, msg:'Please provide timer'})
         if(!sender_id) return res.status(404).json({status:false, msg:'Please provide sender id'})
@@ -24,6 +25,7 @@ const addtask = async(req, res, next) => {
             title: title,
             start_date: start_date,
             start_time:start_time,
+            end_time:end_time,
             type: type,
             timer: timer,
             senderId: sender_id,
@@ -118,11 +120,28 @@ const taskview = async(req, res, next) => {
 }
 
 
+const taskactionlist = async(req, res, next) => {
+    try {
+        const {token} = req.headers
+        const {_id, email} = token_decode(token)
+        const fetch_user = await create_user.findOne({_id:_id, verified: true})
+        if(!fetch_user) return res.status(404).json({status:false, msg:'user not exists!'})
+        const fetch_task = await create_task.findOne({senderId: _id})
+        if(!fetch_task) return res.status(404).json({status:false, msg:'task not found'})
+        return res.status(200).json({status:true, msg:'sucessfully getting task', data: fetch_task})
+    } catch (e) {
+        console.log(e)
+        return res.status(500).json({status:false, msg: 'someting went wrong'})
+    }
+}
+
+
 
 
 module.exports = {
     addtask:addtask,
     deletetask: deletetask,
     alltask: alltask,
-    taskview:taskview
+    taskview:taskview,
+    taskactionlist: taskactionlist
 }

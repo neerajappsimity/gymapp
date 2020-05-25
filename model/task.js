@@ -15,6 +15,10 @@ const task = new Schema({
         type: String,
         trim: true
     },
+    end_time: {
+        type: String,
+        trim: true
+    },
     type: {
         type: String,
         trim: true

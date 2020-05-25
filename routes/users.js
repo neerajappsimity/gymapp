@@ -21,6 +21,7 @@ router.post('/addTask', verifyToken, taskController.addtask);
 router.post('/deleteTask', verifyToken, taskController.deletetask)
 router.post('/allTask', verifyToken, taskController.alltask)
 router.post('/taskView', verifyToken, taskController.taskview)
+router.post('/taskActionList', verifyToken, taskController.taskactionlist)
 
 
 module.exports = router;
