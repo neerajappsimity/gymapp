@@ -15,6 +15,11 @@ router.post('/register', userController.register)
 router.post('/confirmation', userController.confirmation)
 router.post('/login', userController.login)
 router.post('/profile', verifyToken, userController.profile)
+router.post('/editProfile', verifyToken, userController.editProfile)
+router.post('/home', verifyToken, userController.home)
+
+/*** Add Lat Lng After Singup ***/
+router.post('/addLatLng', userController.addLatLng)
 
 /*** Tasks */
 router.post('/addTask', verifyToken, taskController.addtask);

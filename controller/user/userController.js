@@ -110,11 +110,88 @@ const profile = async(req, res, next) => {
     }
 }
 
+const editProfile = async(req, res, next) => {
+    try {
+        const { token } = req.headers
+        const { email, _id } = token_decode(token)
+        const { newName, newPhone, newPicture } = req.body
+        const fetch_user = await create_user.findOne({ email:email, _id:_id })
+        if(!fetch_user) return res.json({status:false, msg:'User not exists!'})
+        if(!newName) return res.json({status:false, msg:'Please provide new name.'})
+        if(!newPhone) return res.json({status:false, msg:'Please provide new phone number.'})
+        const date = Date.now();
+        if(fetch_user.picture !== newPicture)
+        {
+            var fileName =_id+String(date)+".png";
+            
+            require('fs').writeFile(path.join("public/images/User/"+fileName), newPicture, "base64", function(err){
+                console.log(err);
+            });
+            const URL = req.protocol+"://"+req.headers.host
+            var finalImage = URL+"/images/User/"+fileName;
+        }
+        else{
+            var finalImage = fetch_user.picture
+        }
+        fetch_user.picture = finalImage
+        fetch_user.name = newName
+        fetch_user.phone = newPhone
+        fetch_user.save()
+        return res.status(200).json({status:true, msg: 'profile successfully updated', data: fetch_user})
+
+
+        
+    } catch (e) {
+        console.log(e)
+        return res.status(500).json({status:false, msg: 'something went wrong'})
+    }
+}
+
+const addLatLng = async(req, res, next) => {
+    try {
+        const { user_id, lat, lng } = req.body
+        if(!user_id) return res.json({status:false, msg:'Please provide user id'})
+        if(!lat) return res.json({status:false, msg:'Please provide latitude'})
+        if(!lng) return res.json({status:false, msg:'Please provide longitude'})
+        const fetch_user = await create_user.findOne({_id: user_id})
+        if(!fetch_user) return res.json({status:false, msg: 'User not exists'}) 
+        fetch_user.lat = lat
+        fetch_user.lng = lng
+        fetch_user.save()
+        return res.status(200).json({status:true, msg:'lat, lng successfully added.', data: fetch_user})
+        
+    } catch (e) {
+        console.log(e)
+        return res.status(500).json({status:false, msg:'something went wrong'})
+    }
+}
+
+
+/*** HOME **/
+const home =  async(req, res, next) => {
+    try {
+        const { token } = req.headers
+        const { email, _id } = token_decode(token)
+        const fetch_user = await create_user.findOne({ email:email, _id:_id })
+        if(!fetch_user) return res.json({status:false, msg:'User not exists!'})
+        const fetch_alluser = await create_user.find({verified: true})
+        if(!fetch_alluser) return res.json({status:false, msg:'user not found'})
+        return res.status(200).json({status:true, msg:'successfully getting', data: fetch_alluser})
+
+        
+    } catch (e) {
+        console.log(e)
+        return res.status(500).json({status:false, msg:'something went wrong'})
+    }
+}
 
 
 module.exports = {
     register: register,
     confirmation: confirmation,
     login: login,
-    profile: profile
+    profile: profile,
+    editProfile: editProfile,
+    addLatLng: addLatLng,
+    home: home
 }

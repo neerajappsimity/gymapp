@@ -22,6 +22,11 @@ const user = new Schema({
         type: String,
         trim: true
     },
+    picture: {
+        type: String,
+        trim: true,
+        default: null
+    },
     verified: {
         type: Boolean,
         default: false
@@ -37,6 +42,16 @@ const user = new Schema({
         default: null
     },
     fcmToken: {
+        type: String,
+        trim: true,
+        default: null
+    },
+    lat: {
+        type: String,
+        trim: true,
+        default: null
+    },
+    lng: {
         type: String,
         trim: true,
         default: null
