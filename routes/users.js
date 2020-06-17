@@ -29,6 +29,7 @@ router.post('/taskView', verifyToken, taskController.taskview)
 router.post('/taskActionList', verifyToken, taskController.taskactionlist)
 router.post('/acceptRequest', verifyToken, taskController.acceptRequest)
 router.post('/declineRequest', verifyToken, taskController.declineRequest)
+router.post('/actionRequest', verifyToken, taskController.actionRequest)
 
 
 
