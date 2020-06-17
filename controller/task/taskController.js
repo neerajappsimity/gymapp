@@ -135,12 +135,43 @@ const taskactionlist = async(req, res, next) => {
     }
 }
 
-const acceptTask = async(req, res, next) => {
+const acceptRequest = async(req, res, next) => {
     try {
+        const { token } = req.headers
+        const { email, _id } = token_decode(token)
+        const { task_id } = req.body
+        const fetch_user = await create_user.findOne({_id:_id, verified: true})
+        if(!fetch_user) return res.status(404).json({status:false, msg:'user not exists!'})
+        if(!task_id) return res.json({status:false, msg:'Please provide task id'})
+        const taskId = await create_task.findOne({_id: task_id,senderId:_id, status: 'send', 'start_date': { $lte: new Date() } })
+        if(!taskId) return res.json({status:false, msg:'task not found'})
+        taskId.status = 'accept'
+        taskId.save()
+        return res.status(200).json({status:true, msg:'task successfully accepted', data: taskId})
         
     } catch (e) {
         console.log(e)
         return res.status(500).json({status:false, msg:'something went wrong'})
+    }
+}
+
+const declineRequest = async(req, res, next) => {
+    try {
+        const { token } = req.headers
+        const { email, _id } = token_decode(token)
+        const { task_id } = req.body
+        const fetch_user = await create_user.findOne({_id:_id, verified: true})
+        if(!fetch_user) return res.status(404).json({status:false, msg:'user not exists!'})
+        if(!task_id) return res.json({status:false, msg:'Please provide task id'})
+        const taskId = await create_task.findOne({_id: task_id,senderId:_id, status: 'send', 'start_date': { $lte: new Date() } })
+        if(!taskId) return res.json({status:false, msg:'task not found'})
+        taskId.status = 'declined'
+        taskId.save()
+        return res.status(200).json({status:true, msg:'task successfully declined'})
+
+    } catch (e) {
+        console.log(e)
+        return res.status(500).json({status:false, msg: 'something went wrong'})
     }
 }
 
@@ -153,5 +184,6 @@ module.exports = {
     alltask: alltask,
     taskview:taskview,
     taskactionlist: taskactionlist,
-    acceptTask: acceptTask
+    acceptRequest: acceptRequest,
+    declineRequest: declineRequest
 }

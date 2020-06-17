@@ -27,7 +27,9 @@ router.post('/deleteTask', verifyToken, taskController.deletetask)
 router.post('/allTask', verifyToken, taskController.alltask)
 router.post('/taskView', verifyToken, taskController.taskview)
 router.post('/taskActionList', verifyToken, taskController.taskactionlist)
-router.post('/acceptTask', verifyToken, taskController.acceptTask)
+router.post('/acceptRequest', verifyToken, taskController.acceptRequest)
+router.post('/declineRequest', verifyToken, taskController.declineRequest)
+
 
 
 module.exports = router;
