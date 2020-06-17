@@ -126,12 +126,21 @@ const taskactionlist = async(req, res, next) => {
         const {_id, email} = token_decode(token)
         const fetch_user = await create_user.findOne({_id:_id, verified: true})
         if(!fetch_user) return res.status(404).json({status:false, msg:'user not exists!'})
-        const fetch_task = await create_task.findOne({senderId: _id})
+        const fetch_task = await create_task.find({senderId: _id})
         if(!fetch_task) return res.status(404).json({status:false, msg:'task not found'})
         return res.status(200).json({status:true, msg:'sucessfully getting task', data: fetch_task})
     } catch (e) {
         console.log(e)
         return res.status(500).json({status:false, msg: 'someting went wrong'})
+    }
+}
+
+const acceptTask = async(req, res, next) => {
+    try {
+        
+    } catch (e) {
+        console.log(e)
+        return res.status(500).json({status:false, msg:'something went wrong'})
     }
 }
 
@@ -143,5 +152,6 @@ module.exports = {
     deletetask: deletetask,
     alltask: alltask,
     taskview:taskview,
-    taskactionlist: taskactionlist
+    taskactionlist: taskactionlist,
+    acceptTask: acceptTask
 }

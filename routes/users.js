@@ -19,7 +19,7 @@ router.post('/editProfile', verifyToken, userController.editProfile)
 router.post('/home', verifyToken, userController.home)
 
 /*** Add Lat Lng After Singup ***/
-router.post('/addLatLng', userController.addLatLng)
+router.post('/addLatLng', verifyToken, userController.addLatLng)
 
 /*** Tasks */
 router.post('/addTask', verifyToken, taskController.addtask);
@@ -27,6 +27,7 @@ router.post('/deleteTask', verifyToken, taskController.deletetask)
 router.post('/allTask', verifyToken, taskController.alltask)
 router.post('/taskView', verifyToken, taskController.taskview)
 router.post('/taskActionList', verifyToken, taskController.taskactionlist)
+router.post('/acceptTask', verifyToken, taskController.acceptTask)
 
 
 module.exports = router;
