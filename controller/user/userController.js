@@ -8,6 +8,7 @@ const config = require('../../config/database');
 const path = require('path')
 const generateRandomNumber = require('../../logic/random_number')
 const sendEmail = require('../../logic/send_emails')
+const chatsupportEmail = require('../../logic/chatsupport_emails')
 const token_decode = require('../../logic/token_decode')
 
 
@@ -186,6 +187,29 @@ const home =  async(req, res, next) => {
     }
 }
 
+const chatSupport = async(req, res, next) => {
+    try {
+        const { token } = req.headers
+        const { email, _id } = token_decode(token)
+        const { title, emailAddress, description} = req.body
+        if(!title) return res.json({status:false, msg:'Please provide title'})
+        if(!emailAddress) return res.json({status:false, msg:'Please provide email'})
+        if(!description) return res.json({status:false, msg:'Please provide description'})
+        const fetch_user = await create_user.findOne({_id:_id, verified: true})
+        if(!fetch_user) return res.status(404).json({status:false, msg:'user not exists!'})
+        const subject = "Chat Support"
+        const adminEmail = "neeraj.kumar@appsimity.com"
+        const msg = `Title: ${title} 
+                     Email Address: ${emailAddress} 
+                     Description: ${description}`
+        chatsupportEmail(subject, msg, adminEmail.trim(), true);
+        return res.status(200).json({ status: true, msg: `Thanks, For Request.` })
+    } catch (e) {
+        console.log(e)
+        return res.status(500).json({status:false, msg:'something went wrong'})
+    }
+}
+
 
 module.exports = {
     register: register,
@@ -194,5 +218,7 @@ module.exports = {
     profile: profile,
     editProfile: editProfile,
     addLatLng: addLatLng,
-    home: home
+    home: home,
+    chatSupport: chatSupport
+    
 }

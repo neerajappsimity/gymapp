@@ -20,6 +20,7 @@ router.post('/home', verifyToken, userController.home)
 
 /*** Add Lat Lng After Singup ***/
 router.post('/addLatLng', verifyToken, userController.addLatLng)
+router.post('/chatSupport', verifyToken, userController.chatSupport)
 
 /*** Tasks */
 router.post('/addTask', verifyToken, taskController.addtask);
