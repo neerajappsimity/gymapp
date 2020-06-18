@@ -197,13 +197,18 @@ const chatSupport = async(req, res, next) => {
         if(!description) return res.json({status:false, msg:'Please provide description'})
         const fetch_user = await create_user.findOne({_id:_id, verified: true})
         if(!fetch_user) return res.status(404).json({status:false, msg:'user not exists!'})
-        const subject = "Chat Support"
+        const subject = "GYM Fitness: Chat Support"
         const adminEmail = "neeraj.kumar@appsimity.com"
-        const msg = `Title: ${title} 
-                     Email Address: ${emailAddress} 
-                     Description: ${description}`
+        let msg = `<h2>Hello Admin,</h2> 
+                    
+                    <p>Title: ${title} </p> 
+                     <p>Email Address: ${emailAddress} </p>
+                     <p>Description: ${description}</p>
+                     
+                     <h3>Regards,</h3>
+                     <h3>GYM Fitness Team</h3>`
         chatsupportEmail(subject, msg, adminEmail.trim(), true);
-        return res.status(200).json({ status: true, msg: `Thanks, For Request.` })
+        return res.status(200).json({ status: true, msg: `Thankyou, Support will contact you soon.` })
     } catch (e) {
         console.log(e)
         return res.status(500).json({status:false, msg:'something went wrong'})
